@@ -144,6 +144,9 @@ void CANSimple::do_command(Axis& axis, const can_Message_t& msg) {
         case MSG_SET_LINEAR_COUNT:
             set_linear_count_callback(axis, msg);
             break;
+        case MSG_SAVE_CONFIGURATION:
+            save_configuration_callback(axis, msg);
+            break;
         default:
             break;
     }
@@ -329,6 +332,10 @@ bool CANSimple::get_vbus_voltage_callback(const Axis& axis) {
 
 void CANSimple::clear_errors_callback(Axis& axis, const can_Message_t& msg) {
     odrv.clear_errors(); // TODO: might want to clear axis errors only
+}
+
+void CANSimple::save_configuration_callback(Axis& axis, const can_Message_t& msg) {
+    odrv.save_configuration();
 }
 
 uint32_t CANSimple::service_stack() {
