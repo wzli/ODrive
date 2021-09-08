@@ -144,6 +144,21 @@ void CANSimple::do_command(Axis& axis, const can_Message_t& msg) {
         case MSG_SET_LINEAR_COUNT:
             set_linear_count_callback(axis, msg);
             break;
+        case MSG_SET_POS_GAIN:
+            set_pos_gain_callback(axis, msg);
+            break;
+        case MSG_SET_VEL_GAIN:
+            set_vel_gain_callback(axis, msg);
+            break;
+        case MSG_SET_VEL_INTEGRATOR_GAIN:
+            set_vel_integrator_gain_callback(axis, msg);
+            break;
+        case MSG_SET_CURRENT_CTRL_BW:
+            set_current_ctrl_bw_callback(axis, msg);
+            break;
+        case MSG_SET_ENCODER_BW:
+            set_encoder_bw_callback(axis, msg);
+            break;
         case MSG_SAVE_CONFIGURATION:
             save_configuration_callback(axis, msg);
             break;
@@ -293,6 +308,26 @@ void CANSimple::set_traj_inertia_callback(Axis& axis, const can_Message_t& msg) 
 
 void CANSimple::set_linear_count_callback(Axis& axis, const can_Message_t& msg){
     axis.encoder_.set_linear_count(can_getSignal<int32_t>(msg, 0, 32, true));
+}
+
+void CANSimple::set_pos_gain_callback(Axis& axis, const can_Message_t& msg){
+    axis.controller_.config_.pos_gain = can_getSignal<float>(msg, 0, 32, true);
+}
+
+void CANSimple::set_vel_gain_callback(Axis& axis, const can_Message_t& msg){
+    axis.controller_.config_.vel_gain = can_getSignal<float>(msg, 0, 32, true);
+}
+
+void CANSimple::set_vel_integrator_gain_callback(Axis& axis, const can_Message_t& msg){
+    axis.controller_.config_.vel_integrator_gain = can_getSignal<float>(msg, 0, 32, true);
+}
+
+void CANSimple::set_current_ctrl_bw_callback(Axis& axis, const can_Message_t& msg){
+    axis.motor_.config_.current_control_bandwidth = can_getSignal<float>(msg, 0, 32, true);
+}
+
+void CANSimple::set_encoder_bw_callback(Axis& axis, const can_Message_t& msg){
+    axis.encoder_.config_.bandwidth = can_getSignal<float>(msg, 0, 32, true);
 }
 
 bool CANSimple::get_iq_callback(const Axis& axis) {

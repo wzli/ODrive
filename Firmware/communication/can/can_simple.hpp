@@ -33,6 +33,11 @@ class CANSimple {
         MSG_GET_VBUS_VOLTAGE,
         MSG_CLEAR_ERRORS,
         MSG_SET_LINEAR_COUNT,
+        MSG_SET_POS_GAIN,
+        MSG_SET_VEL_GAIN,
+        MSG_SET_VEL_INTEGRATOR_GAIN,
+        MSG_SET_CURRENT_CTRL_BW,
+        MSG_SET_ENCODER_BW,
         MSG_SAVE_CONFIGURATION,
         MSG_CO_HEARTBEAT_CMD = 0x700,  // CANOpen NMT Heartbeat  SEND
     };
@@ -75,6 +80,11 @@ class CANSimple {
     static void set_traj_accel_limits_callback(Axis& axis, const can_Message_t& msg);
     static void set_traj_inertia_callback(Axis& axis, const can_Message_t& msg);
     static void set_linear_count_callback(Axis& axis, const can_Message_t& msg);
+    static void set_pos_gain_callback(Axis& axis, const can_Message_t& msg);
+    static void set_vel_gain_callback(Axis& axis, const can_Message_t& msg);
+    static void set_vel_integrator_gain_callback(Axis& axis, const can_Message_t& msg);
+    static void set_current_ctrl_bw_callback(Axis& axis, const can_Message_t& msg);
+    static void set_encoder_bw_callback(Axis& axis, const can_Message_t& msg);
 
     // Other functions
     static void nmt_callback(const Axis& axis, const can_Message_t& msg);
