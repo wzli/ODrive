@@ -303,7 +303,7 @@ bool CANSimple::get_iq_callback(const Axis& axis) {
     if (!Idq_setpoint.has_value()) {
         Idq_setpoint = {0.0f, 0.0f};
     }
-    
+
     static_assert(sizeof(float) == sizeof(Idq_setpoint->first));
     static_assert(sizeof(float) == sizeof(Idq_setpoint->second));
     can_setSignal<float>(txmsg, Idq_setpoint->first, 0, 32, true);
@@ -348,7 +348,8 @@ uint32_t CANSimple::service_stack() {
         MEASURE_TIME(a.task_times_.can_heartbeat) {
             if (a.config_.can.heartbeat_rate_ms > 0) {
                 if ((now - a.can_.last_heartbeat) >= a.config_.can.heartbeat_rate_ms) {
-                    if (send_heartbeat(a))
+                    if (send_heartbeat(a) && get_motor_error_callback(a) &&
+                            get_encoder_error_callback(a))
                         a.can_.last_heartbeat = now;
                 }
 
@@ -358,7 +359,7 @@ uint32_t CANSimple::service_stack() {
 
             if (a.config_.can.encoder_rate_ms > 0) {
                 if ((now - a.can_.last_encoder) >= a.config_.can.encoder_rate_ms) {
-                    if (get_encoder_estimates_callback(a))
+                    if (get_encoder_estimates_callback(a) && get_iq_callback(a))
                         a.can_.last_encoder = now;
                 }
 
