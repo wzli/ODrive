@@ -159,6 +159,10 @@ void CANSimple::do_command(Axis& axis, const can_Message_t& msg) {
         case MSG_SET_ENCODER_BW:
             set_encoder_bw_callback(axis, msg);
             break;
+        case MSG_GET_ODRIVE_ERROR:
+            if (msg.rtr)
+                get_odrive_error_callback(axis);
+            break;
         case MSG_SAVE_CONFIGURATION:
             save_configuration_callback(axis, msg);
             break;
@@ -173,6 +177,18 @@ void CANSimple::nmt_callback(const Axis& axis, const can_Message_t& msg) {
 
 void CANSimple::estop_callback(Axis& axis, const can_Message_t& msg) {
     axis.error_ |= Axis::ERROR_ESTOP_REQUESTED;
+}
+
+bool CANSimple::get_odrive_error_callback(const Axis& axis) {
+    can_Message_t txmsg;
+    txmsg.id = axis.config_.can.node_id << NUM_CMD_ID_BITS;
+    txmsg.id += MSG_GET_ODRIVE_ERROR;  // heartbeat ID
+    txmsg.isExt = axis.config_.can.is_extended;
+    txmsg.len = 8;
+
+    can_setSignal(txmsg, odrv.error_, 0, 32, true);
+
+    return canbus_->send_message(txmsg);
 }
 
 bool CANSimple::get_motor_error_callback(const Axis& axis) {
@@ -391,7 +407,7 @@ uint32_t CANSimple::service_stack() {
             if (a.config_.can.heartbeat_rate_ms > 0) {
                 if ((now - a.can_.last_heartbeat) >= a.config_.can.heartbeat_rate_ms) {
                     if (send_heartbeat(a) && get_motor_error_callback(a) &&
-                            get_encoder_error_callback(a))
+                            get_encoder_error_callback(a) && get_odrive_error_callback(a))
                         a.can_.last_heartbeat = now;
                 }
 
