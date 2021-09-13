@@ -38,7 +38,8 @@ class CANSimple {
         MSG_SET_VEL_INTEGRATOR_GAIN,
         MSG_SET_CURRENT_CTRL_BW,
         MSG_SET_ENCODER_BW,
-        MSG_GET_ODRIVE_ERROR,
+        MSG_GET_SYSTEM_ERROR,
+        MSG_GET_CONTROLLER_ERROR,
         MSG_SAVE_CONFIGURATION,
         MSG_CO_HEARTBEAT_CMD = 0x700,  // CANOpen NMT Heartbeat  SEND
     };
@@ -58,7 +59,7 @@ class CANSimple {
     void do_command(Axis& axis, const can_Message_t& cmd);
 
     // Get functions (msg.rtr bit must be set)
-    bool get_odrive_error_callback(const Axis& axis);
+    bool get_system_error_callback(const Axis& axis);
     bool get_motor_error_callback(const Axis& axis);
     bool get_encoder_error_callback(const Axis& axis);
     bool get_controller_error_callback(const Axis& axis);
